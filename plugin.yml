@@ -1,0 +1,27 @@
+name: ExtendedMovement
+main: me.DropTrooperColo.Main
+version: 1.0
+commands:
+   help:
+      description: Redirects Help
+      usage: /<command>
+      
+   plugins:
+      description: Redirects Plugins
+      usage: /<command>
+
+   pl:
+      description: Redirects Pl
+      usage: /<command>
+
+   ?:
+      description: Redirects ?
+      usage: /<command>
+      
+   Spawn:
+      description: Sends you to spawn
+      usage: /<command>
+      
+   MemeQueen:
+      description: Gives you the MemeQueen's Items
+      usage: /<command>
