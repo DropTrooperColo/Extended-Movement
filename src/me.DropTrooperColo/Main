@@ -1,0 +1,129 @@
+package me.DropTrooperColo;
+
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
+import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerToggleFlightEvent;
+import org.bukkit.event.weather.WeatherChangeEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+
+import me.DropTrooperColo.Utilities.ParticleEffect;
+
+
+public class Main extends JavaPlugin implements Listener {
+	
+	@Override
+	public void onEnable() {
+		getServer().getPluginManager().registerEvents(this, this);
+		
+	}
+	
+	@EventHandler(priority=EventPriority.HIGHEST)
+    public void onWeatherChange(WeatherChangeEvent event) {
+      
+        boolean rain = event.toWeatherState();
+        if(rain)
+            event.setCancelled(true);
+    }
+	
+	@EventHandler
+	public void onJoin(PlayerJoinEvent event) {
+		Player player = event.getPlayer();
+		player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 1000000, 2));
+	}
+	
+	@EventHandler
+	public void onPlayerToggleFlight(PlayerToggleFlightEvent event) {
+		Player player = event.getPlayer();
+		if (player.getGameMode() == GameMode.CREATIVE)
+			return;
+		event.setCancelled(true);
+		player.setAllowFlight(false);
+		player.setFlying(false);
+		player.setVelocity(player.getLocation().getDirection().multiply(1.5).setY(0.75));
+		player.playSound(player.getLocation(), Sound.DIG_STONE, 10F, 1F);
+		ParticleEffect.CLOUD.display(1, 0, 1, 0, 20, player.getLocation().subtract(0, 0, 0), 20);
+	}
+	
+	@EventHandler
+	public void onPlayerMove(PlayerMoveEvent event) {
+		Player player = event.getPlayer();
+		if ((player.getGameMode() != GameMode.CREATIVE)
+				&& (player.getLocation().subtract(0, 0, 0.5).getBlock().getType() != Material.AIR) ||
+				(player.getLocation().add(0, 0, 0.5).getBlock().getType() != Material.AIR) ||
+				(player.getLocation().subtract(0.5, 0, 0).getBlock().getType() != Material.AIR) ||
+				(player.getLocation().add(0.5, 0, 0).getBlock().getType() != Material.AIR)
+				&& (!player.isFlying()))
+			player.setAllowFlight(true);
+	}
+	
+	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+		
+		if (cmd.getName().equalsIgnoreCase("help") && sender instanceof Player) {
+			Player player = (Player) sender;
+			
+			player.sendMessage(ChatColor.BLUE + "" + ChatColor.BOLD + "SIR Gaming Extended Movement Help:");
+			player.sendMessage(ChatColor.WHITE + "" + "To use Extended Movement get against a wall and double tap space.");
+			player.sendMessage(ChatColor.WHITE + "" + "The Extended Movement is maintained by Drop and more will come as time goes on.");
+			player.sendMessage(ChatColor.WHITE + "" + "Feel free to suggest any ideas for the server if you see Drop.");
+			
+			return true;
+			
+		} else if(cmd.getName().equalsIgnoreCase("plugins") && sender instanceof Player) {
+			Player player = (Player) sender;
+			
+			player.sendMessage(ChatColor.RED + " " + ChatColor.BOLD + "You do not have permissions to use this command!");
+			
+			return true;
+			
+		} else if(cmd.getName().equalsIgnoreCase("pl") && sender instanceof Player) {
+				Player player = (Player) sender;
+				
+			player.sendMessage(ChatColor.RED + " " + ChatColor.BOLD + "You do not have permissions to use this command!");
+			
+			return true; 
+		
+		} else if(cmd.getName().equalsIgnoreCase("?") && sender instanceof Player) {
+			Player player = (Player) sender;
+		
+			player.sendMessage(ChatColor.RED + " " + ChatColor.BOLD + "You do not have permissions to use this command!");
+			
+			return true;
+			
+		} else if(cmd.getName().equalsIgnoreCase("Spawn") && sender instanceof Player) {
+		
+			Bukkit.dispatchCommand(sender, "warp spawn");
+			
+			return true;
+			
+		} else if(cmd.getName().equalsIgnoreCase("MemeQueen") && sender instanceof Player) {
+			Player player = (Player) sender;
+			ItemStack qh = new ItemStack(Material.LEATHER_HELMET, 1);
+			ItemStack qb = new ItemStack(Material.GOLD_BOOTS, 1);
+			
+			player.getInventory().addItem(qh);
+			player.getInventory().addItem(qb);
+		
+			return true;
+		}
+		return false;
+	}
+	
+}
+
+
+
+
